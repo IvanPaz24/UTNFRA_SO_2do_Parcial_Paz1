@@ -1,0 +1,32 @@
+---
+# tasks file for 2do_parcial
+
+- debug:
+    msg: "Tareas del 2do Parcial"
+
+- name: Crear directorios necesarios
+  ansible.builtin.file:
+    path: "/home/osboxes/UTN-FRA_SO_Examenes/202406/ansible/tmp/2do_parcial/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - alumno
+    - equipo
+
+- name: Generar archivo datos_alumno.txt
+  template:
+    src: /home/osboxes/UTN-FRA_SO_Examenes/202406/ansible/roles/2do_parcial/templates/datos_alumno.j2
+    dest: /home/osboxes/UTN-FRA_SO_Examenes/202406/ansible/tmp/2do_parcial/alumno/datos_alumno.txt
+
+- name: Generar archivo datos_equipo.txt
+  template:
+    src: /home/osboxes/UTN-FRA_SO_Examenes/202406/ansible/roles/2do_parcial/templates/datos_equipo.j2
+    dest: /home/osboxes/UTN-FRA_SO_Examenes/202406/ansible/tmp/2do_parcial/equipo/datos_equipo.txt
+
+- name: Configurar sudoers para el grupo 2PSupervisores
+  lineinfile:
+    path: /etc/sudoers
+    regexp: '^%2PSupervisores ALL=(ALL) NOPASSWD:'
+    line: '%2PSupervisores ALL=(ALL) NOPASSWD: ALL'
+    create: yes
+    validate: visudo
